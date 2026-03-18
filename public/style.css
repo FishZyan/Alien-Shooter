@@ -1,13 +1,10 @@
 :root {
-    --bg-dark: #0f0c29;
-    --bg-mid: #302b63;
-    --bg-light: #24243e;
-    --primary: #00f2fe;
-    --secondary: #4facfe;
-    --danger: #ff0844;
+    --bg-dark: #000000;
+    --primary: #00ff00;
+    --secondary: #00ffff;
+    --danger: #ff0055;
     --text-main: #ffffff;
-    --glass-bg: rgba(15, 12, 41, 0.6);
-    --glass-border: rgba(255, 255, 255, 0.1);
+    --retro-gray: #333333;
 }
 
 * {
@@ -17,14 +14,15 @@
 }
 
 body {
-    font-family: 'Outfit', sans-serif;
-    background: linear-gradient(135deg, var(--bg-dark), var(--bg-mid), var(--bg-light));
+    font-family: 'Press Start 2P', monospace; /* Authentic 8-bit font */
+    background: var(--bg-dark);
     color: var(--text-main);
     overflow: hidden;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    image-rendering: pixelated; /* Crisp pixel art edges */
 }
 
 #gameContainer {
@@ -33,9 +31,10 @@ body {
     height: 100vh;
     max-width: 800px;
     max-height: 1000px;
-    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
-    background-color: #050510;
+    box-shadow: 0 0 0 5px var(--retro-gray);
+    background-color: #000;
     overflow: hidden;
+    border: 4px solid var(--primary);
 }
 
 canvas {
@@ -50,18 +49,21 @@ canvas {
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none; /* Let clicks pass through by default */
+    pointer-events: none;
 }
 
 /* Specific panels should capture pointer events */
-#startScreen, #gameOverScreen {
+#startScreen,
+#gameOverScreen {
     pointer-events: auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     z-index: 10;
-    transition: opacity 0.3s ease;
+    background: rgba(0, 0, 0, 0.85); /* Solid black-ish background instead of glass */
+    border: 4px solid var(--primary);
+    box-shadow: inset 0 0 20px var(--primary);
 }
 
 #hud {
@@ -72,61 +74,54 @@ canvas {
 }
 
 .score-board {
-    font-size: 1.5rem;
-    font-weight: 600;
-    text-shadow: 0 0 10px var(--primary);
-}
-
-.glass-panel {
-    background: var(--glass-bg);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid var(--glass-border);
+    font-size: 1.2rem;
+    color: var(--secondary);
+    text-transform: uppercase;
 }
 
 .visible {
-    opacity: 1;
-    pointer-events: auto;
+    display: flex;
 }
 
 .hidden {
-    opacity: 0 !important;
+    display: none !important;
     pointer-events: none !important;
 }
 
 h1 {
-    font-size: 4rem;
-    margin-bottom: 10px;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
     text-align: center;
-    letter-spacing: 2px;
+    line-height: 1.5;
+    color: var(--primary);
 }
 
 .glow-text {
-    color: #fff;
-    text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary), 0 0 40px var(--primary);
+    text-transform: uppercase;
 }
 
 .error-glow {
-    text-shadow: 0 0 10px var(--danger), 0 0 20px var(--danger), 0 0 40px var(--danger);
+    color: var(--danger);
+    text-shadow: 4px 4px 0px #550000;
 }
 
 p {
-    font-size: 1.2rem;
+    font-size: 0.8rem;
     margin-bottom: 20px;
-    color: #ccc;
+    color: #fff;
     text-align: center;
+    line-height: 1.5;
 }
 
 .controls-hint {
-    font-size: 1rem;
-    color: #aaa;
+    font-size: 0.7rem;
+    color: var(--secondary);
     margin-bottom: 40px;
 }
 
 .highlight-text {
-    color: var(--primary);
-    font-weight: 800;
-    font-size: 1.5rem;
+    color: var(--secondary);
+    font-size: 1.2rem;
 }
 
 .input-group {
@@ -134,62 +129,62 @@ p {
 }
 
 input[type="text"] {
-    padding: 15px 20px;
-    font-size: 1.2rem;
-    font-family: 'Outfit', sans-serif;
-    border: 2px solid var(--primary);
-    border-radius: 30px;
-    background: rgba(0, 0, 0, 0.5);
+    padding: 15px;
+    font-size: 1rem;
+    font-family: 'Press Start 2P', monospace;
+    border: 4px solid var(--secondary);
+    background: #000;
     color: #fff;
     outline: none;
     text-align: center;
-    transition: box-shadow 0.3s ease;
     pointer-events: auto !important;
     user-select: auto !important;
     position: relative;
     z-index: 1000;
+    text-transform: uppercase;
 }
 
 input[type="text"]:focus {
-    box-shadow: 0 0 15px var(--primary);
+    background: var(--retro-gray);
 }
 
 .neon-btn {
-    padding: 15px 40px;
-    font-size: 1.2rem;
-    font-weight: 800;
-    font-family: 'Outfit', sans-serif;
-    color: #fff;
-    background: transparent;
-    border: 2px solid var(--primary);
-    border-radius: 30px;
+    padding: 15px 30px;
+    font-size: 1rem;
+    font-family: 'Press Start 2P', monospace;
+    color: #000;
+    background: var(--primary);
+    border: 4px solid #fff;
     cursor: pointer;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 10px inset var(--primary), 0 0 10px var(--primary);
+    transition: transform 0.1s;
+    box-shadow: 4px 4px 0px #aaa;
 }
 
 .neon-btn:hover {
-    background: var(--primary);
-    color: #000;
-    box-shadow: 0 0 20px inset var(--primary), 0 0 20px var(--primary), 0 0 40px var(--primary);
+    background: #fff;
+    border-color: var(--primary);
+}
+
+.neon-btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: none;
 }
 
 #leaderboardContainer {
     margin-bottom: 30px;
-    background: rgba(0, 0, 0, 0.4);
-    border-radius: 15px;
-    padding: 20px;
+    background: #000;
+    padding: 15px;
     min-width: 300px;
-    border: 1px solid var(--glass-border);
+    border: 4px solid var(--secondary);
 }
 
 #leaderboardContainer h2 {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     margin-bottom: 15px;
     text-align: center;
-    color: var(--secondary);
+    color: var(--primary);
+    text-transform: uppercase;
 }
 
 #leaderboardList {
@@ -201,9 +196,10 @@ input[type="text"]:focus {
 #leaderboardList li {
     display: flex;
     justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    font-size: 1.1rem;
+    padding: 10px 0;
+    border-bottom: 2px dashed var(--retro-gray);
+    font-size: 0.8rem;
+    text-transform: uppercase;
 }
 
 #leaderboardList li:last-child {
