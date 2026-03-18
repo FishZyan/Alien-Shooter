@@ -191,6 +191,12 @@ input[type="text"]:focus {
     list-style: none;
     max-height: 150px;
     overflow-y: auto;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+#leaderboardList::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
 }
 
 #leaderboardList li {
