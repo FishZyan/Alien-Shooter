@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Slingshot Defense</title>
+    <!-- Google Fonts for modern typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="gameContainer">
+        <!-- The Game Canvas -->
+        <canvas id="gameCanvas"></canvas>
+
+        <!-- UI Overlays -->
+        <div id="hud" class="overlay">
+            <div class="score-board">Score: <span id="scoreDisplay">0</span></div>
+        </div>
+
+        <div id="startScreen" class="overlay glass-panel visible">
+            <h1 class="glow-text">NEON DEFENSE</h1>
+            <p>Aliens are descending. Shoot them!</p>
+            <p class="controls-hint"><strong>Controls:</strong> Click anywhere on screen to shoot.</p>
+            <div class="input-group">
+                <input type="text" id="usernameInput" placeholder="Enter your name" maxlength="15" autocomplete="off">
+            </div>
+            <button id="startBtn" class="neon-btn">START GAME</button>
+        </div>
+
+        <div id="gameOverScreen" class="overlay glass-panel hidden">
+            <h1 class="glow-text error-glow">GAME OVER</h1>
+            <p style="margin-bottom: 10px;">Your Score: <span id="finalScoreDisplay" class="highlight-text">0</span></p>
+
+            <div id="leaderboardContainer" class="hidden">
+                <h2>Top Scores</h2>
+                <ul id="leaderboardList">
+                    <li>Loading...</li>
+                </ul>
+            </div>
+
+            <div id="nameChangeSection"
+                style="display: flex; flex-direction: column; align-items: center; margin-bottom: 20px;">
+                <p style="margin-bottom: 10px; margin-top: 10px;">Player Name</p>
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <input type="text" id="endUsernameInput" placeholder="Enter your name" maxlength="15"
+                        autocomplete="off">
+                </div>
+            </div>
+
+            <button id="restartBtn" class="neon-btn">PLAY AGAIN</button>
+        </div>
+    </div>
+
+    <!-- Game Logic -->
+    <script src="game.js"></script>
+</body>
+
+</html>

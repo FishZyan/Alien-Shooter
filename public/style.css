@@ -1,0 +1,211 @@
+:root {
+    --bg-dark: #0f0c29;
+    --bg-mid: #302b63;
+    --bg-light: #24243e;
+    --primary: #00f2fe;
+    --secondary: #4facfe;
+    --danger: #ff0844;
+    --text-main: #ffffff;
+    --glass-bg: rgba(15, 12, 41, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background: linear-gradient(135deg, var(--bg-dark), var(--bg-mid), var(--bg-light));
+    color: var(--text-main);
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#gameContainer {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    max-width: 800px;
+    max-height: 1000px;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+    background-color: #050510;
+    overflow: hidden;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Let clicks pass through by default */
+}
+
+/* Specific panels should capture pointer events */
+#startScreen, #gameOverScreen {
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    transition: opacity 0.3s ease;
+}
+
+#hud {
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    z-index: 5;
+}
+
+.score-board {
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-shadow: 0 0 10px var(--primary);
+}
+
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+}
+
+.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.hidden {
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+h1 {
+    font-size: 4rem;
+    margin-bottom: 10px;
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+.glow-text {
+    color: #fff;
+    text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary), 0 0 40px var(--primary);
+}
+
+.error-glow {
+    text-shadow: 0 0 10px var(--danger), 0 0 20px var(--danger), 0 0 40px var(--danger);
+}
+
+p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    color: #ccc;
+    text-align: center;
+}
+
+.controls-hint {
+    font-size: 1rem;
+    color: #aaa;
+    margin-bottom: 40px;
+}
+
+.highlight-text {
+    color: var(--primary);
+    font-weight: 800;
+    font-size: 1.5rem;
+}
+
+.input-group {
+    margin-bottom: 30px;
+}
+
+input[type="text"] {
+    padding: 15px 20px;
+    font-size: 1.2rem;
+    font-family: 'Outfit', sans-serif;
+    border: 2px solid var(--primary);
+    border-radius: 30px;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    outline: none;
+    text-align: center;
+    transition: box-shadow 0.3s ease;
+    pointer-events: auto !important;
+    user-select: auto !important;
+    position: relative;
+    z-index: 1000;
+}
+
+input[type="text"]:focus {
+    box-shadow: 0 0 15px var(--primary);
+}
+
+.neon-btn {
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    font-weight: 800;
+    font-family: 'Outfit', sans-serif;
+    color: #fff;
+    background: transparent;
+    border: 2px solid var(--primary);
+    border-radius: 30px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px inset var(--primary), 0 0 10px var(--primary);
+}
+
+.neon-btn:hover {
+    background: var(--primary);
+    color: #000;
+    box-shadow: 0 0 20px inset var(--primary), 0 0 20px var(--primary), 0 0 40px var(--primary);
+}
+
+#leaderboardContainer {
+    margin-bottom: 30px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 15px;
+    padding: 20px;
+    min-width: 300px;
+    border: 1px solid var(--glass-border);
+}
+
+#leaderboardContainer h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    text-align: center;
+    color: var(--secondary);
+}
+
+#leaderboardList {
+    list-style: none;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+#leaderboardList li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 1.1rem;
+}
+
+#leaderboardList li:last-child {
+    border-bottom: none;
+}
