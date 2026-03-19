@@ -359,11 +359,12 @@ function createParticles(x, y, color) {
 // --- Main Game Loop ---
 
 function animate() {
-    if (!isPlaying) return;
     animationId = requestAnimationFrame(animate);
 
-    if (slowTimer > 0) slowTimer--;
-    const currentSpeedMult = slowTimer > 0 ? 0.5 : 1;
+    if (isPlaying && slowTimer > 0) slowTimer--;
+    
+    // Hyperspace speed in menu, otherwise check slowTimer
+    const currentSpeedMult = isPlaying ? (slowTimer > 0 ? 0.5 : 1) : 3;
 
     // Draw solid black background
     ctx.fillStyle = '#000000';
@@ -377,9 +378,17 @@ function animate() {
         ctx.fillRect(star.x, star.y, star.size, star.size);
     });
 
+    let drawY = player.y;
+    if (!isPlaying) {
+        // Bobbing animation for the jet in the menu
+        drawY += Math.sin(Date.now() / 200) * 15;
+    }
+
     // Draw Player Jet (Engine flame toggles)
     const flameColor = Math.random() > 0.5 ? '#ff9900' : '#ff0000';
-    drawSprite(JET_SPRITE, player.x - player.width/2, player.y - player.height/2, player.scale, player.color, flameColor);
+    drawSprite(JET_SPRITE, player.x - player.width/2, drawY - player.height/2, player.scale, player.color, flameColor);
+
+    if (!isPlaying) return;
 
     // Update Particles
     for (let i = particles.length - 1; i >= 0; i--) {
@@ -512,12 +521,10 @@ function startGame() {
     isPlaying = true;
     spawnAliens();
     spawnPowerUps();
-    animate();
 }
 
 async function endGame() {
     isPlaying = false;
-    cancelAnimationFrame(animationId);
     clearInterval(spawnInterval);
     clearTimeout(powerUpTimeout);
     
@@ -574,3 +581,6 @@ restartBtn.addEventListener('click', () => {
     gameOverScreen.classList.add('hidden');
     startGame();
 });
+
+// Start background animation
+animate();
