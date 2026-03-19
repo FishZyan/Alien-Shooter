@@ -253,10 +253,18 @@ class Particle {
 // --- Spawning Logic ---
 
 let spawnInterval;
-let powerUpInterval;
 let powerUpTimeout;
 
 function spawnPowerUps() {
+    function scheduleNext() {
+        if (!isPlaying) return;
+        const delay = 5000 + Math.random() * 10000;
+        powerUpTimeout = setTimeout(() => {
+            spawnSingle();
+            scheduleNext();
+        }, delay);
+    }
+
     function spawnSingle() {
         if (!isPlaying) return;
         
@@ -272,8 +280,7 @@ function spawnPowerUps() {
         powerUps.push(pUp);
     }
     
-    powerUpTimeout = setTimeout(spawnSingle, 2000);
-    powerUpInterval = setInterval(spawnSingle, 5000); 
+    scheduleNext();
 }
 
 function spawnAliens() {
@@ -301,6 +308,9 @@ function spawnAliens() {
 // --- Controls ---
 
 function shootProjectile(targetPos) {
+    score = Math.max(0, score - 1);
+    scoreDisplay.innerText = score;
+
     const dx = targetPos.x - player.x;
     const dy = targetPos.y - player.y;
     const baseAngle = Math.atan2(dy, dx);
@@ -509,7 +519,6 @@ async function endGame() {
     isPlaying = false;
     cancelAnimationFrame(animationId);
     clearInterval(spawnInterval);
-    clearInterval(powerUpInterval);
     clearTimeout(powerUpTimeout);
     
     finalScoreDisplay.innerText = score;
