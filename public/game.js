@@ -20,6 +20,65 @@ let animationId;
 let username = '';
 let slowTimer = 0;
 
+// --- Web Audio API (Retro SFX) ---
+let audioCtx;
+
+function initAudio() {
+    if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContext();
+    }
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+}
+
+function playSound(type) {
+    if (!audioCtx) return;
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    const now = audioCtx.currentTime;
+    
+    if (type === 'shoot') {
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.exponentialRampToValueAtTime(110, now + 0.1);
+        gainNode.gain.setValueAtTime(0.05, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+        osc.start(now);
+        osc.stop(now + 0.1);
+    } else if (type === 'explode') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(100, now);
+        osc.frequency.exponentialRampToValueAtTime(10, now + 0.2);
+        gainNode.gain.setValueAtTime(0.1, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+        osc.start(now);
+        osc.stop(now + 0.2);
+    } else if (type === 'powerup') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.setValueAtTime(600, now + 0.1);
+        osc.frequency.setValueAtTime(800, now + 0.2);
+        gainNode.gain.setValueAtTime(0.1, now);
+        gainNode.gain.linearRampToValueAtTime(0, now + 0.3);
+        osc.start(now);
+        osc.stop(now + 0.3);
+    } else if (type === 'gameover') {
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.exponentialRampToValueAtTime(40, now + 0.8);
+        gainNode.gain.setValueAtTime(0.2, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+        osc.start(now);
+        osc.stop(now + 0.8);
+    }
+}
+
 // Entity Arrays
 let projectiles = [];
 let aliens = [];
@@ -308,6 +367,7 @@ function spawnAliens() {
 // --- Controls ---
 
 function shootProjectile(targetPos) {
+    playSound('shoot');
     score = Math.max(0, score - 1);
     scoreDisplay.innerText = score;
 
@@ -413,6 +473,7 @@ function animate() {
             const approxProjRad = proj.height/2;
 
             if (dist - approxPUpRad - approxProjRad < 1) {
+                playSound('powerup');
                 if (pUp.type === 'F') {
                     slowTimer = 300; // 5 seconds
                 } else if (pUp.type === 'E') {
@@ -465,6 +526,7 @@ function animate() {
 
         // Game Over condition: hits bottom level
         if (alien.y + alien.height/2 >= player.y - player.height/2) {
+            playSound('gameover');
             endGame();
             return;
         }
@@ -490,6 +552,7 @@ function animate() {
                 
                 // Explode alien 
                 aliens.splice(alienIndex, 1);
+                playSound('explode');
                 score += 15;
                 scoreDisplay.innerText = score;
                 alienDestroyed = true;
@@ -503,6 +566,7 @@ function animate() {
 // --- Start and End Game Logic ---
 
 function startGame() {
+    initAudio();
     username = usernameInput.value.trim() || 'Anonymous';
     
     startScreen.classList.remove('visible');
