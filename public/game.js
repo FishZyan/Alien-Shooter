@@ -22,6 +22,9 @@ let slowTimer = 0;
 
 // --- Web Audio API (Retro SFX) ---
 let audioCtx;
+let bgmNextNoteTime = 0;
+let bgmCurrentNote = 0;
+const bgmBassline = [65.41, 65.41, 77.78, 65.41, 87.31, 65.41, 98.00, 65.41]; // Retro driving bassline
 
 function initAudio() {
     if (!audioCtx) {
@@ -30,6 +33,9 @@ function initAudio() {
     }
     if (audioCtx.state === 'suspended') {
         audioCtx.resume();
+    }
+    if (bgmNextNoteTime === 0) {
+        bgmNextNoteTime = audioCtx.currentTime + 0.1;
     }
 }
 
@@ -77,6 +83,30 @@ function playSound(type) {
         osc.start(now);
         osc.stop(now + 0.8);
     }
+}
+
+function playBGMNote(time, freq) {
+    if (!audioCtx) return;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    const filter = audioCtx.createBiquadFilter();
+    
+    osc.type = 'sawtooth';
+    osc.frequency.value = freq;
+    
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(isPlaying ? 1200 : 300, time); // Muffled in menu
+    filter.frequency.exponentialRampToValueAtTime(120, time + 0.1);
+    
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioCtx.destination);
+    
+    gain.gain.setValueAtTime(0.12, time); 
+    gain.gain.exponentialRampToValueAtTime(0.001, time + 0.15);
+    
+    osc.start(time);
+    osc.stop(time + 0.2);
 }
 
 // Entity Arrays
@@ -420,6 +450,19 @@ function createParticles(x, y, color) {
 
 function animate() {
     animationId = requestAnimationFrame(animate);
+
+    if (audioCtx && audioCtx.state === 'running') {
+        // Handle BGM sequencing
+        if (bgmNextNoteTime < audioCtx.currentTime) {
+            bgmNextNoteTime = audioCtx.currentTime + 0.05; 
+        }
+        while (bgmNextNoteTime < audioCtx.currentTime + 0.1) {
+            playBGMNote(bgmNextNoteTime, bgmBassline[bgmCurrentNote]);
+            const secondsPerBeat = 60.0 / 140; // 140 BPM
+            bgmNextNoteTime += 0.25 * secondsPerBeat; // 16th notes
+            bgmCurrentNote = (bgmCurrentNote + 1) % bgmBassline.length;
+        }
+    }
 
     if (isPlaying && slowTimer > 0) slowTimer--;
     
