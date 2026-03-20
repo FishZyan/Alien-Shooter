@@ -28,6 +28,26 @@ To run the local server, you will need to have [Node.js](https://nodejs.org/) in
 4. Open your favorite web browser and navigate to:
    [http://localhost:3000](http://localhost:3000)
 
+## Running with Docker
+If you're deploying this to a remote server or want to isolate the application using Docker, a `Dockerfile` is provided.
+
+1. Build the Docker image:
+   ```bash
+   docker build -t neon-alien-shooter .
+   ```
+2. Run the container:
+   ```bash
+   docker run -p 3000:3000 -d neon-alien-shooter
+   ```
+*(Optional)*: If you want to ensure your `scores.json` leaderboard data survives container restarts, you can mount it to a local volume:
+   ```bash
+   # Create a blank scores.json first locally if it doesn't exist:
+   touch scores.json
+   
+   # Run with volume mount:
+   docker run -p 3000:3000 -v $(pwd)/scores.json:/app/scores.json -d neon-alien-shooter
+   ```
+
 ## Gameplay Instructions
 - Upon opening the page, enter your name and hit **START GAME**.
 - Move your mouse around; a built-in crosshair line on the Fighter Jet will follow your cursor to help you aim.
