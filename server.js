@@ -16,16 +16,27 @@ if (!fs.existsSync(SCORES_FILE)) {
     fs.writeFileSync(SCORES_FILE, JSON.stringify([]));
 }
 
+function readScoresSafe() {
+    if (!fs.existsSync(SCORES_FILE)) return [];
+    try {
+        const data = fs.readFileSync(SCORES_FILE, 'utf8');
+        if (!data.trim()) return []; // Handle empty files
+        return JSON.parse(data);
+    } catch (err) {
+        console.error('Error parsing scores file (might be invalid JSON), returning empty list:', err);
+        return [];
+    }
+}
+
 // Endpoint to fetch top scores
 app.get('/api/scores', (req, res) => {
     try {
-        const data = fs.readFileSync(SCORES_FILE, 'utf8');
-        let scores = JSON.parse(data);
+        let scores = readScoresSafe();
         // Sort descending by score
         scores.sort((a, b) => b.score - a.score);
         res.json(scores.slice(0, 10)); // return top 10
     } catch (err) {
-        console.error('Error reading scores:', err);
+        console.error('Error returning scores:', err);
         res.status(500).json({ error: 'Failed to read scores' });
     }
 });
@@ -39,8 +50,7 @@ app.post('/api/score', (req, res) => {
     }
 
     try {
-        const data = fs.readFileSync(SCORES_FILE, 'utf8');
-        const scores = JSON.parse(data);
+        const scores = readScoresSafe();
         
         scores.push({
             username,
